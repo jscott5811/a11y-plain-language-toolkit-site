@@ -58,6 +58,15 @@ Targets a **3rd to 5th-grade** reading level. It uses:
    npm run dev
    ```
 
+## 🚀 Deployment to GitHub Pages
+
+This project is configured to deploy automatically via GitHub Actions.
+
+1. Go to your GitHub repository's **Settings** tab.
+2. Navigate to **Pages** in the sidebar.
+3. Under **Build and deployment > Source**, select **GitHub Actions**.
+4. Push your code to the `main` branch, and the "Deploy static content to Pages" workflow will handle the rest.
+
 ### Building for Production
 ```bash
 npm run build
