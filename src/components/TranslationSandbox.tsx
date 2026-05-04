@@ -1,23 +1,80 @@
 import { useState } from 'react';
-import { EXAMPLES, convertToPlainLanguage, convertToEasyRead } from '../utils/simplifier';
-import { Sparkles, Copy, FileText, CheckCircle, Eraser } from 'lucide-react';
+import { EXAMPLES, getGeminiKey, convertToPlainLanguage, convertToEasyRead } from '../utils/simplifier';
+import { Sparkles, Copy, FileText, CheckCircle, Eraser, Loader2, AlertCircle } from 'lucide-react';
+import { GoogleGenAI } from "@google/genai";
 
 export default function TranslationSandbox() {
   const [inputText, setInputText] = useState(EXAMPLES[0].original);
   const [plainOutput, setPlainOutput] = useState(EXAMPLES[0].plain);
   const [easyOutput, setEasyOutput] = useState(EXAMPLES[0].easy);
   const [copied, setCopied] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const loadExample = (ex: typeof EXAMPLES[0]) => {
     setInputText(ex.original);
     setPlainOutput(ex.plain);
     setEasyOutput(ex.easy);
+    setError(null);
   };
 
-  const handleConvert = () => {
+  const handleConvert = async () => {
     if (!inputText.trim()) return;
-    setPlainOutput(convertToPlainLanguage(inputText));
-    setEasyOutput(convertToEasyRead(inputText));
+    setIsProcessing(true);
+    setError(null);
+
+    const apiKey = getGeminiKey();
+
+    if (!apiKey) {
+      // Local fallback
+      setTimeout(() => {
+        setPlainOutput(convertToPlainLanguage(inputText));
+        setEasyOutput(convertToEasyRead(inputText));
+        setIsProcessing(false);
+      }, 600);
+      return;
+    }
+
+    try {
+      const ai = new GoogleGenAI({ apiKey });
+      
+      // We'll perform two requests or one combined request. 
+      // One combined request is more efficient.
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: [{ parts: [{ text: inputText }] }],
+        config: {
+          responseMimeType: "application/json",
+          systemInstruction: `You are an expert in Plain Language and Easy Read translation. 
+          STRICTLY return JSON with two keys: "plain" and "easy".
+          
+          "plain" RULE: 
+          - Rewrite the input text into Plain Language (6th-8th grade).
+          - Use EXACTLY ONE paragraph of 5 to 7 sentences.
+          - Each sentence MUST be between 12 and 18 words.
+          - Use professional, active voice.
+          
+          "easy" RULE:
+          - Rewrite into Easy Read (3rd-5th grade).
+          - Use exactly 4-6 simple bullet points.
+          - Use very short, clear statements.
+          - End with a "Words to Know" section if there was difficult jargon.`
+        }
+      });
+
+      const text = response.text || '';
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const cleanJson = jsonMatch ? jsonMatch[0] : text;
+      const result = JSON.parse(cleanJson || '{}');
+      
+      setPlainOutput(result.plain || "Failed to generate plain language text.");
+      setEasyOutput(result.easy || "Failed to generate easy read text.");
+    } catch (err) {
+      console.error("Gemini Error:", err);
+      setError("Failed to translate text. Please check your connection or try again.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleClear = () => {
@@ -82,12 +139,27 @@ export default function TranslationSandbox() {
           <div className="mt-4 flex gap-3">
             <button
               onClick={handleConvert}
-              disabled={!inputText.trim()}
+              disabled={!inputText.trim() || isProcessing}
               className="flex-1 px-6 py-3.5 bg-[#1A1C1E] dark:bg-white text-white dark:text-[#1A1C1E] font-bold rounded-xl hover:bg-[#1A1C1E]/90 dark:hover:bg-white/90 transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg dark:shadow-white/5"
             >
-              <Sparkles className="h-5 w-5" /> Translate Input
+              {isProcessing ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-5 w-5" /> Translate Input
+                </>
+              )}
             </button>
           </div>
+          {error && (
+            <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-center gap-2 text-red-600 dark:text-red-400 text-xs font-bold">
+              <AlertCircle className="h-4 w-4" />
+              {error}
+            </div>
+          )}
         </div>
 
         {/* Right Side: Translation Outputs */}

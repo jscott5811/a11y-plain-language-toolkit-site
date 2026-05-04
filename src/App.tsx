@@ -4,10 +4,11 @@ import TranslationSandbox from './components/TranslationSandbox';
 import A11yChecker from './components/A11yChecker';
 import PromptBuilder from './components/PromptBuilder';
 import InclusiveSkills from './components/InclusiveSkills';
-import { Eye, FileText, CheckSquare, Sparkles, Sun, Moon, Book } from 'lucide-react';
+import InclusiveTools from './components/InclusiveTools';
+import { Eye, FileText, CheckSquare, Sparkles, Sun, Moon, Book, Wrench } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'sandbox' | 'checker' | 'prompt' | 'skills'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'sandbox' | 'checker' | 'prompt' | 'skills' | 'tools'>('overview');
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
@@ -37,6 +38,12 @@ export default function App() {
       desc: 'Style guide, Do\'s/Don\'ts & typography definitions'
     },
     {
+      id: 'tools',
+      label: 'Inclusive Toolkit',
+      icon: Wrench,
+      desc: 'Audit, Visual, ARIA & Protocol generators'
+    },
+    {
       id: 'sandbox',
       label: 'Translation Sandbox',
       icon: Sparkles,
@@ -56,7 +63,7 @@ export default function App() {
     },
     {
       id: 'skills',
-      label: 'Inclusive Skills',
+      label: 'Skills Library',
       icon: Book,
       desc: '50+ specialized accessibility commands'
     }
@@ -104,7 +111,7 @@ export default function App() {
 
         {/* Dynamic Tab Switchers */}
         <div className="max-w-6xl mx-auto px-6 py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -147,6 +154,7 @@ export default function App() {
           {/* Active Tab Panel */}
           <main className="mt-10 mb-16 bg-white/50 dark:bg-black/20 rounded-2xl p-0 md:p-4">
             {activeTab === 'overview' && <ToolkitOverview />}
+            {activeTab === 'tools' && <InclusiveTools />}
             {activeTab === 'sandbox' && <TranslationSandbox />}
             {activeTab === 'checker' && <A11yChecker />}
             {activeTab === 'prompt' && <PromptBuilder />}
