@@ -195,6 +195,97 @@ export const getGeminiKey = () => {
   return localStorage.getItem('GEMINI_API_KEY') || process.env.GEMINI_API_KEY || '';
 };
 
+export function localAudit(input: string) {
+  const findings: any[] = [];
+  let score = 100;
+
+  if (input.toLowerCase().includes('click here')) {
+    findings.push({ type: 'error', code: '2.4.4', desc: 'Found non-descriptive link text "Click Here". Use text that describes the destination.' });
+    score -= 15;
+  }
+
+  if (input.includes('<img') && !input.includes('alt=')) {
+    findings.push({ type: 'error', code: '1.1.1', desc: 'Detected image element without alt attribute. Screen readers cannot describe this content.' });
+    score -= 20;
+  }
+
+  if (!input.match(/<h[1-6]/i)) {
+    findings.push({ type: 'warning', code: '1.3.1', desc: 'No heading structure found. Use h1-h6 tags to create a logical document outline.' });
+    score -= 10;
+  }
+
+  if (findings.length === 0) {
+    findings.push({ type: 'success', code: 'A11y', desc: 'Basic structural sanity check passed for the provided snippet.' });
+  }
+
+  return { score: Math.max(0, score), findings };
+}
+
+export function localDensity(input: string) {
+  const words = input.split(/\s+/).filter(Boolean).length;
+  const rating = words > 150 ? 'High Density' : words > 50 ? 'Balanced' : 'Low Density';
+  
+  return {
+    rating,
+    recommendation: words > 100 
+      ? 'This content is wordy. Consider breaking long paragraphs into lists or using headings to aid scanning.' 
+      : 'Information density is well-managed for most cognitive profiles.',
+    metrics: { 
+      decisions: Math.floor(words / 40) + 1, 
+      itemsToRemember: Math.min(7, Math.floor(words / 25)), 
+      visualElements: input.match(/<[^>]+>/g)?.length || 0 
+    }
+  };
+}
+
+export function localVisual() {
+  return {
+    currentContrast: 'Analysis restricted in Local Mode',
+    recommended: [
+      { color: '#1A1C1E', name: 'Ink Navy', ratio: '19.1:1' },
+      { color: '#000000', name: 'Rich Black', ratio: '21:1' },
+      { color: '#1E40AF', name: 'Deep Blue', ratio: '8.4:1' }
+    ]
+  };
+}
+
+export function localImages(input: string) {
+  return {
+    equitableAlt: `A clear description for the visual: "${input.substring(0, 50)}${input.length > 50 ? '...' : ''}". Use descriptive language that avoids assumptions about identity unless necessary.`,
+    contextReason: 'Local template used. To enable AI-powered vision analysis, please provide a Gemini API key in settings.'
+  };
+}
+
+export function localARIA(input: string) {
+  const recommendations: any[] = [];
+  
+  if (input.toLowerCase().includes('button') || input.toLowerCase().includes('<button')) {
+    recommendations.push({ component: 'Button', aria: 'aria-label="[Action Description]"', role: 'button', reason: 'Ensures the button intent is clear even if it contains only an icon.' });
+  }
+  
+  if (input.toLowerCase().includes('form') || input.toLowerCase().includes('<input')) {
+    recommendations.push({ component: 'Form Field', aria: 'aria-labelledby="label-id"', reason: 'Directly associates labels with inputs for screen readers.' });
+  }
+
+  if (recommendations.length === 0) {
+    recommendations.push({ component: 'Generic Container', aria: 'role="region" aria-label="Content section"', reason: 'Helps users navigate landmarks in complex layouts.' });
+  }
+
+  return { recommendations };
+}
+
+export function localResearch(input: string) {
+  return {
+    protocol: 'Local Framework: Inclusive Usability Heuristics',
+    inclusiveGoals: [
+      'Evaluate navigation ease for keyboard-only users.',
+      'Check if instructions are clear for neurodivergent participants.',
+      `Analyze ${input.substring(0, 20)} for accessibility blockers.`
+    ],
+    scriptPrompt: 'Can you show me how you would complete the main task? Please share your thoughts as you navigate.'
+  };
+}
+
 export const EXAMPLES = [
   {
     title: "Terms of Service",

@@ -16,7 +16,7 @@ export default function PromptBuilder() {
       ? `Plain Language formats (6th to 8th-grade reading level).\n\n` 
       : `Easy Read formats (3rd to 5th-grade reading level).\n\n`;
 
-    prompt += `## Key Principles & Guidelines (from DESIGN.md)\n`;
+    prompt += `## Key Principles & Guidelines (from https://github.com/google-labs-code/design.md)\n`;
     prompt += `- Accessibility Standard: Every output must meet WCAG 2.2 AA/AAA standards.\n`;
     prompt += `- Reading level: ${level === 'plain' ? '6th to 8th grade' : '3rd to 5th grade'}\n`;
     prompt += `- Primary Color: #1A1C1E (Solid Navy/Black) for text and core elements.\n`;

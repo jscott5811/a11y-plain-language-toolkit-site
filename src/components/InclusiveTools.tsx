@@ -14,10 +14,21 @@ import {
   X,
   Loader2,
   Settings,
-  Globe
+  Globe,
+  Copy
 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
-import { convertToPlainLanguage, convertToEasyRead, analyzeText } from '../utils/simplifier';
+import { 
+  convertToPlainLanguage, 
+  convertToEasyRead, 
+  analyzeText,
+  localAudit,
+  localDensity,
+  localVisual,
+  localImages,
+  localARIA,
+  localResearch 
+} from '../utils/simplifier';
 
 type ToolId = 'audit' | 'density' | 'visual' | 'images' | 'plain' | 'easy' | 'aria' | 'research';
 
@@ -45,6 +56,7 @@ export default function InclusiveTools() {
   const [input, setInput] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [userApiKey, setUserApiKey] = useState(() => localStorage.getItem('GEMINI_API_KEY') || '');
@@ -75,6 +87,12 @@ export default function InclusiveTools() {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
+  const copyToClipboard = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(id);
+    setTimeout(() => setCopied(null), 2000);
+  };
+
   const currentTool = TOOLS.find(t => t.id === activeTool)!;
 
   const handleProcess = async () => {
@@ -85,31 +103,46 @@ export default function InclusiveTools() {
     const apiKey = userApiKey || process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-      // Local Fallback for specific tools
-      if (activeTool === 'plain' || activeTool === 'easy') {
-        setTimeout(() => {
-          const stats = analyzeText(input);
-          const result = activeTool === 'plain' 
-            ? { 
-                plainText: convertToPlainLanguage(input), 
-                gradeLevel: stats.gradeLevel, 
-                readabilityScore: `Flesch: ${stats.fleschScore}` 
-              }
-            : { 
-                easyText: convertToEasyRead(input), 
-                gradeLevel: "3rd-5th Grade", 
-                visualAnchors: "Local mode generated summary" 
-              };
-          setOutput({ status: 'done', result, isLocal: true });
-        }, 800);
-        return;
-      }
-      
-      setOutput({ 
-        status: 'error', 
-        result: null, 
-        error: "An API Key is required for this tool. Click the settings gear to provide one for local browser usage." 
-      });
+      // Local Fallback for ALL tools
+      setTimeout(() => {
+        let result = null;
+        switch(activeTool) {
+          case 'plain':
+            const plainStats = analyzeText(input);
+            result = { 
+              plainText: convertToPlainLanguage(input), 
+              gradeLevel: plainStats.gradeLevel, 
+              readabilityScore: `Flesch: ${plainStats.fleschScore}` 
+            };
+            break;
+          case 'easy':
+            result = { 
+              easyText: convertToEasyRead(input), 
+              gradeLevel: "3rd-5th Grade", 
+              visualAnchors: "Local mode generated summary" 
+            };
+            break;
+          case 'audit':
+            result = localAudit(input);
+            break;
+          case 'density':
+            result = localDensity(input);
+            break;
+          case 'visual':
+            result = localVisual();
+            break;
+          case 'images':
+            result = localImages(input);
+            break;
+          case 'aria':
+            result = localARIA(input);
+            break;
+          case 'research':
+            result = localResearch(input);
+            break;
+        }
+        setOutput({ status: 'done', result, isLocal: true });
+      }, 800);
       return;
     }
 
@@ -279,6 +312,11 @@ export default function InclusiveTools() {
               <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-gray-100 dark:bg-white/5 rounded-full border border-gray-200 dark:border-white/10 mb-4">
                 <currentTool.icon className="h-4 w-4 text-[#1A1C1E] dark:text-white" />
                 <span className="text-[10px] font-black uppercase tracking-widest text-[#1A1C1E] dark:text-white">{currentTool.label} Environment</span>
+                {output.isLocal && (
+                  <span className="ml-2 pl-2 border-l border-gray-300 dark:border-white/20 text-amber-500 font-bold flex items-center gap-1">
+                    <Globe className="h-3 w-3" /> Static Mode
+                  </span>
+                )}
               </div>
               <h1 className="text-3xl font-black text-[#1A1C1E] dark:text-white uppercase tracking-tight">{currentTool.label} Tool</h1>
             </div>
@@ -324,8 +362,12 @@ export default function InclusiveTools() {
                 <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">
                   Step 1: Upload Source Image
                 </label>
-                <span className="text-[10px] font-bold text-blue-500 dark:text-blue-400 uppercase tracking-tight bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded">
-                  Required for Vision Analysis
+                <span className={`text-[10px] font-bold uppercase tracking-tight px-2 py-0.5 rounded ${
+                  userApiKey || process.env.GEMINI_API_KEY
+                  ? 'text-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                  : 'text-amber-500 bg-amber-50 dark:bg-amber-900/20'
+                }`}>
+                  {userApiKey || process.env.GEMINI_API_KEY ? 'Vision API Active' : 'Static Description Mode'}
                 </span>
               </div>
               <div 
@@ -517,8 +559,17 @@ export default function InclusiveTools() {
 
                 {activeTool === 'images' && (
                   <div className="space-y-6">
-                    <div className="p-8 bg-white dark:bg-[#1A1C1E] border-2 border-[#1A1C1E] dark:border-white rounded-3xl shadow-xl">
-                      <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Equitable Alt-Text</div>
+                    <div className="p-8 bg-white dark:bg-[#1A1C1E] border-2 border-[#1A1C1E] dark:border-white rounded-3xl shadow-xl relative group">
+                      <div className="flex justify-between items-center mb-4">
+                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-[#1A1C1E] dark:text-white">Equitable Alt-Text</div>
+                        <button 
+                          onClick={() => copyToClipboard(output.result.equitableAlt, 'alt')}
+                          className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors"
+                          title="Copy Alt Text"
+                        >
+                          {copied === 'alt' ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4 text-gray-400" />}
+                        </button>
+                      </div>
                       <p className="text-xl font-bold leading-relaxed italic text-[#1A1C1E] dark:text-white">
                         "{output.result.equitableAlt}"
                       </p>
@@ -535,9 +586,18 @@ export default function InclusiveTools() {
 
                 {(activeTool === 'plain' || activeTool === 'easy') && (
                   <div className="space-y-6">
-                    <div className="p-8 bg-white dark:bg-[#1A1C1E] border-2 border-[#1A1C1E] dark:border-white rounded-3xl shadow-xl">
-                      <div className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4 text-[#1A1C1E] dark:text-white">
-                        {activeTool === 'plain' ? 'Plain Language Rewrite' : 'Easy Read Rewrite'}
+                    <div className="p-8 bg-white dark:bg-[#1A1C1E] border-2 border-[#1A1C1E] dark:border-white rounded-3xl shadow-xl relative group">
+                      <div className="flex justify-between items-center mb-4">
+                        <div className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest text-[#1A1C1E] dark:text-white">
+                          {activeTool === 'plain' ? 'Plain Language Rewrite' : 'Easy Read Rewrite'}
+                        </div>
+                        <button 
+                          onClick={() => copyToClipboard(activeTool === 'plain' ? output.result.plainText : output.result.easyText, 'rewrite')}
+                          className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors"
+                          title="Copy Rewrite"
+                        >
+                          {copied === 'rewrite' ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4 text-gray-400" />}
+                        </button>
                       </div>
                       <div className={`text-xl font-bold leading-relaxed text-[#1A1C1E] dark:text-white whitespace-pre-wrap ${activeTool === 'easy' ? 'font-normal' : ''}`}>
                         {activeTool === 'plain' ? output.result.plainText : output.result.easyText}
