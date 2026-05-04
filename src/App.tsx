@@ -3,17 +3,21 @@ import ToolkitOverview from './components/ToolkitOverview';
 import TranslationSandbox from './components/TranslationSandbox';
 import A11yChecker from './components/A11yChecker';
 import PromptBuilder from './components/PromptBuilder';
-import { Eye, FileText, CheckSquare, Sparkles, Sun, Moon } from 'lucide-react';
+import InclusiveSkills from './components/InclusiveSkills';
+import { Eye, FileText, CheckSquare, Sparkles, Sun, Moon, Book } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'sandbox' | 'checker' | 'prompt'>('overview');
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('theme') === 'dark' || 
-             (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    }
-    return false;
-  });
+  const [activeTab, setActiveTab] = useState<'overview' | 'sandbox' | 'checker' | 'prompt' | 'skills'>('overview');
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Determine initial theme
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialDarkMode = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+    
+    setIsDarkMode(initialDarkMode);
+  }, []);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -49,6 +53,12 @@ export default function App() {
       label: 'Prompt Builder',
       icon: FileText,
       desc: 'Generate custom AI system prompts'
+    },
+    {
+      id: 'skills',
+      label: 'Inclusive Skills',
+      icon: Book,
+      desc: '50+ specialized accessibility commands'
     }
   ] as const;
 
@@ -75,7 +85,7 @@ export default function App() {
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 mr-2">
                 <button
-                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  onClick={() => setIsDarkMode(prev => !prev)}
                   className="p-2.5 rounded-xl border-2 border-gray-200/80 dark:border-white/10 bg-white dark:bg-white/5 hover:border-gray-300 dark:hover:border-white/20 transition-all text-[#1A1C1E] dark:text-white"
                   title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
                 >
@@ -94,7 +104,7 @@ export default function App() {
 
         {/* Dynamic Tab Switchers */}
         <div className="max-w-6xl mx-auto px-6 py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -140,6 +150,7 @@ export default function App() {
             {activeTab === 'sandbox' && <TranslationSandbox />}
             {activeTab === 'checker' && <A11yChecker />}
             {activeTab === 'prompt' && <PromptBuilder />}
+            {activeTab === 'skills' && <InclusiveSkills />}
           </main>
         </div>
       </div>

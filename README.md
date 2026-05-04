@@ -11,8 +11,21 @@ A comprehensive design system and utility suite for translating complex, jargon-
 - **Translation Sandbox**: Interactively convert technical or legal text into Plain Language (6th-8th grade level) or Easy Read (3rd-5th grade level) with instant previews.
 - **Readability Checker**: Analyze text metrics including Flesch Reading Ease, sentence length distribution, and automated jargon detection.
 - **AI Prompt Builder**: Generate high-quality system instructions for LLMs (like Gemini, GPT-4, or Claude) to automate accessible content creation.
+- **Inclusive Design Skills**: Integrated commands for WCAG auditing, contrast fixing, and cognitive load analysis.
 - **Design System Overview**: A built-in guide for accessibility-first typography, spacing, and communication standards.
 - **Dark Mode Support**: A fully responsive, high-contrast interface designed for various viewing environments.
+
+## 🧠 Inclusive Design Skills & Commands
+
+This toolkit integrates core principles and commands from [Owl-Listener/inclusive-design-skills](https://github.com/Owl-Listener/inclusive-design-skills), providing a comprehensive suite for accessible digital production:
+
+- **`/check-wcag`**: Audit content or UI against WCAG 2.2 AA/AAA standards.
+- **`/fix-contrast`**: Get color pairing suggestions that meet 7:1 (AAA) or 4.5:1 (AA) ratios.
+- **`/inclusive-labeling`**: Generate meaningful ARIA labels, descriptions, and roles.
+- **`/alt-text-gen`**: Create descriptive, objective alt text for images and data viz.
+- **`/cognitive-load-report`**: Analyze information density and recommend simplification (3-5 ideas max per section).
+- **`/plain-language`**: Translate technical jargon into 6th-8th grade reading level.
+- **`/easy-read`**: Convert text into 3rd-5th grade level with visual anchor icons.
 
 ## 🛠️ Tech Stack
 

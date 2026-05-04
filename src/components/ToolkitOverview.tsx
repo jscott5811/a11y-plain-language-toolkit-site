@@ -1,4 +1,4 @@
-import { CheckCircle, XCircle, FileText, Layers, Type, Eye } from 'lucide-react';
+import { CheckCircle, XCircle, FileText, Layers, Type, Eye, Sparkles } from 'lucide-react';
 
 export default function ToolkitOverview() {
   return (
@@ -156,6 +156,58 @@ export default function ToolkitOverview() {
               <span>Avoid passive sentences or high-syllable, indirect language styles.</span>
             </li>
           </ul>
+        </div>
+      </div>
+
+      {/* Inclusive Design Skills Section */}
+      <div className="bg-[#1A1C1E]/5 dark:bg-white/5 border-2 border-dashed border-[#1A1C1E]/20 dark:border-white/20 rounded-2xl p-8 mb-10">
+        <div className="flex flex-col md:flex-row gap-6 items-start">
+          <div className="p-4 bg-white dark:bg-[#101214] border-2 border-[#1A1C1E] dark:border-white rounded-2xl shadow-xl flex-shrink-0">
+            <Sparkles className="h-10 w-10 text-[#1A1C1E] dark:text-white" />
+          </div>
+          <div>
+            <h3 className="text-2xl font-black text-[#1A1C1E] dark:text-white uppercase tracking-tight">
+              Inclusive Design Skills Integrated
+            </h3>
+            <p className="mt-2 text-[#1A1C1E]/70 dark:text-white/70 leading-relaxed font-medium">
+              This toolkit leverages principles from the <a href="https://github.com/Owl-Listener/inclusive-design-skills" target="_blank" rel="noopener noreferrer" className="underline font-bold hover:text-[#1A1C1E] dark:hover:text-white transition-colors">Owl-Listener Inclusive Design Skills</a> library. 
+              These skills go beyond basic accessibility to focus on cognitive load, dignity in design, and radical transparency.
+            </p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+              <div className="flex items-center gap-3">
+                <code className="bg-white dark:bg-black border border-gray-200 dark:border-white/10 px-2 py-1 rounded font-mono text-[10px] font-bold">/check-wcag</code>
+                <span className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">Audit</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <code className="bg-white dark:bg-black border border-gray-200 dark:border-white/10 px-2 py-1 rounded font-mono text-[10px] font-bold">/cognitive-load</code>
+                <span className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">Density</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <code className="bg-white dark:bg-black border border-gray-200 dark:border-white/10 px-2 py-1 rounded font-mono text-[10px] font-bold">/fix-contrast</code>
+                <span className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">Visual</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <code className="bg-white dark:bg-black border border-gray-200 dark:border-white/10 px-2 py-1 rounded font-mono text-[10px] font-bold">/alt-text-gen</code>
+                <span className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">Images</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <code className="bg-white dark:bg-black border border-gray-200 dark:border-white/10 px-2 py-1 rounded font-mono text-[10px] font-bold">/plain-language</code>
+                <span className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">Grade 6-8</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <code className="bg-white dark:bg-black border border-gray-200 dark:border-white/10 px-2 py-1 rounded font-mono text-[10px] font-bold">/easy-read</code>
+                <span className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">Grade 3-5</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <code className="bg-white dark:bg-black border border-gray-200 dark:border-white/10 px-2 py-1 rounded font-mono text-[10px] font-bold">/inclusive-labeling</code>
+                <span className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">ARIA</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <code className="bg-white dark:bg-black border border-gray-200 dark:border-white/10 px-2 py-1 rounded font-mono text-[10px] font-bold">/inclusive-research</code>
+                <span className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">Protocol</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

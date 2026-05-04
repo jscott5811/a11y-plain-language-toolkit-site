@@ -16,18 +16,21 @@ export default function PromptBuilder() {
       ? `Plain Language formats (6th to 8th-grade reading level).\n\n` 
       : `Easy Read formats (3rd to 5th-grade reading level).\n\n`;
 
-    prompt += `## Key Principles & Guidelines\n`;
+    prompt += `## Key Principles & Guidelines (from DESIGN.md)\n`;
+    prompt += `- Accessibility Standard: Every output must meet WCAG 2.2 AA/AAA standards.\n`;
     prompt += `- Reading level: ${level === 'plain' ? '6th to 8th grade' : '3rd to 5th grade'}\n`;
-    prompt += `- Layout: Use soft limestone colors and direct simple shapes when presenting.\n`;
+    prompt += `- Primary Color: #1A1C1E (Solid Navy/Black) for text and core elements.\n`;
+    prompt += `- Background Color: #F7F5F2 (Warm Grey) for canvas and containers.\n`;
+    prompt += `- Typography: Use Open Sans (Sans-serif) at 16px (1.5 line height) for Plain Language, or 20px (1.8 line height) for Easy Read.\n`;
 
     if (level === 'plain') {
-      prompt += `- Sentences: Use short paragraphs and sentences of exactly 12 to 18 words.\n`;
-      prompt += `- Voice: Maintain active voice to show clearly who does what action.\n`;
-      prompt += `- Flow: Put the main point of the message at the beginning.\n`;
+      prompt += `- Sentences: Use plain language formatting, Use in each paragraph at least 5 to 7 sentences (12-18 words recommended).\n`;
+      prompt += `- Voice: Always use Active Voice to show clearly who does what action.\n`;
+      prompt += `- Flow: Put the main point of the message at the absolute beginning.\n`;
     } else {
       prompt += `- Layout: Limit content to five short paragraphs/lines per page.\n`;
       prompt += `- Flow: Put exactly one concrete idea on each line.\n`;
-      prompt += `- Sentence structure: Avoid any compound phrases; keep words highly literal.\n`;
+      prompt += `- Sentence structure: Avoid any compound phrases; keep words highly literal and avoid metaphors.\n`;
     }
 
     if (activeVoice) {
@@ -41,6 +44,17 @@ export default function PromptBuilder() {
     if (includeGlossary) {
       prompt += `- Words to Know glossary: If the original text contains unavoidable jargon or complex terms, append a specific glossary definition to clarify meaning directly.\n`;
     }
+
+    prompt += `\n## Inclusive Design Skills (Owl-Listener Framework)\n`;
+    prompt += `You are also equipped with the following inclusive utility commands:\n`;
+    prompt += `- /check-wcag: Run a technical audit against WCAG 2.2 Level AA/AAA standards.\n`;
+    prompt += `- /fix-contrast: Recommend accessible color palettes and contrast ratios.\n`;
+    prompt += `- /inclusive-labeling: Suggest ARIA labels and roles for UI components.\n`;
+    prompt += `- /alt-text-gen: Create descriptive, equitable alt-text for complex image assets.\n`;
+    prompt += `- /cognitive-load: Identify areas of information density and recommend structural simplification.\n`;
+    prompt += `- /plain-language: Translate text into a 6th-8th grade reading level.\n`;
+    prompt += `- /easy-read: Translate text into a 3rd-5th grade reading level with visual anchors.\n`;
+    prompt += `- /inclusive-research: Suggest protocols for including people with disabilities in design testing.\n`;
 
     prompt += `\n## Output Format\n`;
     prompt += `Return ONLY the translated accessible text following these explicit rules. Do not add metadata, introductions, or extra commentary.`;
