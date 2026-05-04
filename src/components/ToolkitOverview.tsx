@@ -210,6 +210,19 @@ export default function ToolkitOverview() {
           </div>
         </div>
       </div>
+
+      <div className="mt-12 pt-8 border-t border-gray-200 dark:border-white/5 text-center">
+        <p className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">
+          Documentation & Standards Policy
+        </p>
+        <div className="flex flex-wrap justify-center gap-4 text-[10px] font-bold text-gray-500 uppercase">
+          <span>Validated: Design.md</span>
+          <span className="text-gray-300 dark:text-gray-700">|</span>
+          <span>Standards: WCAG 2.2 AA/AAA</span>
+          <span className="text-gray-300 dark:text-gray-700">|</span>
+          <span>Source: Owl-Listener Inclusive Skills</span>
+        </div>
+      </div>
     </div>
   );
 }

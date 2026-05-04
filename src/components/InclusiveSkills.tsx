@@ -174,10 +174,11 @@ export default function InclusiveSkills() {
           <div className="p-4 bg-[#F7F5F2] dark:bg-amber-900/10 border border-amber-200 dark:border-amber-700/30 rounded-xl">
             <div className="flex items-center gap-2 text-amber-900 dark:text-amber-400 mb-2">
               <BookOpen className="h-4 w-4" />
-              <span className="font-bold text-xs uppercase tracking-wider">Credit</span>
+              <span className="font-bold text-xs uppercase tracking-wider">Credits & Standards</span>
             </div>
             <p className="text-[10px] leading-relaxed text-amber-900/70 dark:text-amber-400/70 font-medium">
-              Commands and principles adapted from Owl-Listener's Inclusive Design Skills.
+              Commands adapted from <a href="https://github.com/Owl-Listener/inclusive-design-skills" target="_blank" className="underline">Owl-Listener's Inclusive Design Skills</a>. 
+              Validated via <a href="https://github.com/google/design.md" target="_blank" className="underline">Google Design.md</a>.
             </p>
           </div>
         </div>

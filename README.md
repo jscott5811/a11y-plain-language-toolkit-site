@@ -85,6 +85,21 @@ This project is configured to deploy automatically via GitHub Actions.
 npm run build
 ```
 
+## 🛡️ Design Validation
+
+To ensure the application documentation and design tokens remain consistent with the defined standards, we use the Google Design.md linter:
+
+```bash
+npx @google/design.md lint DESIGN.md
+```
+
+## 📜 Credits
+
+This project integrates and adapts resources from the following creators:
+
+- **[Owl-Listener/inclusive-design-skills](https://github.com/Owl-Listener/inclusive-design-skills)**: For the comprehensive set of cognitive, interaction, and structural accessibility commands.
+- **[Google Design.md](https://github.com/google/design.md)**: For the design documentation framework and validation tools.
+
 ## 📜 License
 
 This project is licensed under the Apache License 2.0. See the `LICENSE` file for details (or `App.tsx` headers).
