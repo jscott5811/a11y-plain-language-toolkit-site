@@ -51,6 +51,14 @@ Targets a **3rd to 5th-grade** reading level. It uses:
 - Visual anchors (icons/emojis) for each point.
 - Extremely literal wording and minimal compound sentences.
 
+## 📝 System Prompts
+
+This repo now hosts the reusable plain language system prompt from the `Plain-Language-Easy-Read-system-prompts` repository:
+
+- [`prompts/plain_language_system_prompt.md`](prompts/plain_language_system_prompt.md) — Translates complex text into Plain Language (6th–8th grade reading level).
+
+Copy the file into your model's system instructions, then ask it to rewrite your text in Plain Language.
+
 ## 💻 Getting Started
 
 ### Prerequisites
